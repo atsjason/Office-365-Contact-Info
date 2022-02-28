@@ -78,35 +78,40 @@ Function setManager($Manager, $EmployeeEmail){
 }
 
 Function ReferenceJobTitle($ADJobTitle, $CSVJobTitle, $EmployeeEmail){
-    
-    if (!($ADJobTitle -eq $CSVJobTitle ))
-    {
-        setJobTitle $CSVJobTitle $EmployeeEmail
-       return $true
+    if(!(($CSVJobTitle -eq $null) -or ($CSVJobTitle -eq [String]::Empty))){
+        if (!($ADJobTitle -eq $CSVJobTitle ))
+        {
+            setJobTitle $CSVJobTitle $EmployeeEmail
+            return $true
+        }
     }
     return $false
 }
 
 Function ReferenceDepartment($ADDepartment, $CSVDepartment, $EmployeeEmail){
-    if (!($ADDepartment -eq $CSVDepartment ))
-    {
-       setDepartment $CSVDepartment $EmployeeEmail
-       return $true
+    if(!(($CSVDepartment -eq $null) -or ($CSVDepartment -eq [String]::Empty))){
+        if (!($ADDepartment -eq $CSVDepartment ))
+        {
+            setDepartment $CSVDepartment $EmployeeEmail
+            return $true
+        }
     }
     return $false
 }
 
 Function ReferenceManager($ADManager, $CSVManager, $EmployeeEmail){
-    if (!($ADManager -eq $CSVManager ))
-    {
-       setManager $CSVManager $EmployeeEmail
-       return $true
+    if(!(($CSVManager -eq $null) -or ($CSVManager -eq [String]::Empty))){
+        if (!($ADManager -eq $CSVManager ))
+        {
+           setManager $CSVManager $EmployeeEmail
+           return $true
+        }
     }
     return $false
 }
 
 Function CSVProcess(){
-    $ExportCSV= [Environment]::GetFolderPath('MyDocuments') + "\Updated Employee Rsoter for ATS_$((Get-Date -format yyyy-MMM-dd-ddd` hh-mm` tt).ToString()).csv"
+    $ExportCSV= [Environment]::GetFolderPath('MyDocuments') + "\Updated Employee Roster for ATS_$((Get-Date -format yyyy-MMM-dd-ddd` hh-mm` tt).ToString()).csv"
     $BadAddress = @()
     $Result=""
     $Output=@()
@@ -130,7 +135,6 @@ Function CSVProcess(){
               $ADJobTitle = checkJobTitle($EmployeeEmail)
               $ADDepartment = checkDepartment($EmployeeEmail)
               $ADManager = checkManager($EmployeeEmail)
-              
 
               $JobTitleChange = ReferenceJobTitle -ADJobTitle $ADJobTitle -CSVJobTitle $JobTitle -EmployeeEmail $EmployeeEmail
               $DepartmentChange = ReferenceDepartment -ADDepartment $ADDepartment -CSVDepartment $Department -EmployeeEmail $EmployeeEmail
@@ -314,10 +318,11 @@ Function getFileName(){
          $file
          if($file)
          {
-             Write-Host "In Loop"
              $csv = Import-CSV $file
              $GUIOutput = CSVProcess
              #$GUIOutput
+             $BadAddressToTextFile = [Environment]::GetFolderPath('MyDocuments') + "\CSV Changes_$((Get-Date -format yyyy-MMM-dd-ddd` hh-mm` tt).ToString()).csv"
+             $GUIOutput | Out-File -FilePath $BadAddressToTextFile
              Read-MultiLineInputBoxDialog($GUIOutput)
          }
          #$BadAddress

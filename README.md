@@ -15,7 +15,7 @@
 
 The order of the columns do not matter; however, the names of the column itself do matter: 
 
-**Last Name,First Name,Employee Email,Department,Job Title,Supervisor Name ,Supervisor Email Address**
+**Last Name,First Name,Email Address,Department,Job Title,Supervisor Name ,Supervisor Email Address**
 
 
 
